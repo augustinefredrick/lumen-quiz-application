@@ -1,7 +1,7 @@
 // register.js
 
 // Registration deadline (1st of October)
-const registrationDeadline = new Date('September 11, 2024');
+const registrationDeadline = new Date('September 16, 2024');
 const currentDate = new Date();
 
 // Display deadline message and fine if past deadline
