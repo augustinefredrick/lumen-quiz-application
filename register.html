@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumen Quiz Competition</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-red-700 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold"><img src="lumen logo 1.jpg" alt=""></a>
+            <div class="hidden md:flex space-x-4">
+                <a href="register.html" class="hover:text-gray-300">Register</a>
+                <a href="login.html" class="hover:text-gray-300">Login</a>
+                <a href="pastwinners.html" class="hover:text-gray-300">Past Winners</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden bg-blue-500 text-white p-4 md:hidden">
+        <a href="register.html" class="block py-2">Register</a>
+        <a href="login.html" class="block py-2">Login</a>
+        <a href="pastwinners.html" class="block py-2">Past Winners</a>
+    </div>
+
+    <div class="container mx-auto p-16">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+            <!-- Registration Header -->
+            <div class="text-center bg-red-700 text-white py-4">
+                <h1 class="text-2xl font-bold">Lumen et Veritas International Academy</h1>
+                
+            </div>
+
+            <div class="p-6">
+                <p id="deadline-message" class="text-red-500 text-center mb-4"></p>
+
+                <!-- Registration Form -->
+                <form id="registration-form" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">School Name</label>
+                        <input type="text" id="school-name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Enter school name" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Candidate Name</label>
+                        <input type="text" id="candidate-name" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Enter candidate name" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Student ID (Password)</label>
+                        <input type="text" id="student-id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="Enter student ID" required>
+                    </div>
+
+                    <!-- Fine display if past deadline -->
+                    <div id="fine-message" class="text-red-500 hidden">Late Registration Fee: N5,000. <br> Access Bank: 0719159765. <br> Account Name: Lumen et Veritas International Academy</div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" class="w-full bg-red-700 text-white font-bold py-2 px-4 rounded hover:bg-red-500 focus:outline-none focus:shadow-outline">Register</button>
+                </form>
+
+                <!-- Done Button -->
+                <div class="mt-4">
+                    <button id="done-button" class="w-full bg-blue-700 text-white font-bold py-2 px-4 rounded hover:bg-blue-500 focus:outline-none focus:shadow-outline">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto text-center">
+            <p>&copy;Copyright 2024 Lumen. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="register.js"></script>
+</body>
+</html>

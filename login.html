@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumen Quiz Competition</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+
+    <!-- Navigation -->
+    <nav class="bg-red-700 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold"><img src="lumen logo 1.jpg" alt=""></a>
+            <div class="hidden md:flex space-x-4">
+                <a href="register.html" class="hover:text-gray-300">Register</a>
+                <a href="login.html" class="hover:text-gray-300">Login</a>
+                <a href="pastwinners.html" class="hover:text-gray-300">Past Winners</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+                </svg>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile menu -->
+    <div id="mobile-menu" class="hidden bg-blue-500 text-white p-4 md:hidden">
+        <a href="register.html" class="block py-2">Register</a>
+        <a href="login.html" class="block py-2">Login</a>
+        <a href="pastwinners.html" class="block py-2">Past Winners</a>
+    </div>
+
+    <div class="container mx-auto p-16">
+        <div class="max-w-md mx-auto bg-white rounded-lg shadow-md overflow-hidden">
+            <div class="text-center bg-red-700 text-white py-4">
+                <h1 class="text-2xl font-bold">Lumen et Veritas International Academy</h1>
+               
+            </div>
+
+            <div class="p-6">
+                <form id="login-form" class="space-y-4">
+                    <div>
+                        <label for="school-select" class="block text-sm font-medium text-gray-700">Select School</label>
+                        <select id="school-select" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="">Choose a school</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="candidate-select" class="block text-sm font-medium text-gray-700">Select Candidate</label>
+                        <select id="candidate-select" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                            <option value="">Choose a candidate</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="student-id" class="block text-sm font-medium text-gray-700">Student ID (Password)</label>
+                        <input type="password" id="student-id" class="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500" required>
+                    </div>
+                    <button type="submit" class="w-full bg-red-700 text-white font-bold py-2 px-4 rounded hover:bg-red-500 focus:outline-none focus:shadow-outline">Login</button>
+                </form>
+
+                <div class="mt-4 text-center">
+                    <a href="pastwinners.html" class="text-red-700 hover:underline font-bold">View Past Winners</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white p-4">
+        <div class="container mx-auto text-center">
+            <p>&copy;Copyright 2024 Lumen. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        const schoolSelect = document.getElementById('school-select');
+        const candidateSelect = document.getElementById('candidate-select');
+        const studentIdInput = document.getElementById('student-id');
+        const loginForm = document.getElementById('login-form');
+
+        // Load registrations from localStorage
+        const registrations = JSON.parse(localStorage.getItem('registrations')) || [];
+
+        // Populate school select
+        const schools = [...new Set(registrations.map(r => r.schoolName))];
+        schools.forEach(school => {
+            const option = document.createElement('option');
+            option.value = school;
+            option.textContent = school;
+            schoolSelect.appendChild(option);
+        });
+
+        // Update candidate select when school is chosen
+        schoolSelect.addEventListener('change', () => {
+            const selectedSchool = schoolSelect.value;
+            candidateSelect.innerHTML = '<option value="">Choose a candidate</option>';
+
+            if (selectedSchool) {
+                const candidates = registrations.filter(r => r.schoolName === selectedSchool);
+                candidates.forEach(candidate => {
+                    const option = document.createElement('option');
+                    option.value = candidate.candidateName;
+                    option.textContent = candidate.candidateName;
+                    candidateSelect.appendChild(option);
+                });
+            }
+        });
+
+        // Handle login form submission
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const selectedSchool = schoolSelect.value;
+            const selectedCandidate = candidateSelect.value;
+            const enteredStudentId = studentIdInput.value;
+
+            if (selectedSchool && selectedCandidate && enteredStudentId) {
+                const candidate = registrations.find(r => 
+                    r.schoolName === selectedSchool && 
+                    r.candidateName === selectedCandidate &&
+                    r.studentId === enteredStudentId
+                );
+
+                if (candidate) {
+                    // Store selected school and candidate in localStorage
+                    localStorage.setItem('selectedSchool', selectedSchool);
+                    localStorage.setItem('selectedCandidate', selectedCandidate);
+                    
+                    alert(`Logged in: ${selectedCandidate} from ${selectedSchool}`);
+                    // Redirect to the quiz page
+                    window.location.href = 'quiz.html';
+                } else {
+                    alert('Invalid credentials. Please try again.');
+                }
+            } else {
+                alert('Please select both school and candidate, and enter the student ID.');
+            }
+        });
+    </script>
+</body>
+</html>

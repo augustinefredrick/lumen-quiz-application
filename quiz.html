@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumen Quiz Competition</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+    <div class="w-full max-w-md bg-white border p-6 rounded shadow-lg">
+        <div class="flex justify-between mb-4">
+            <div class="font-bold text-lg" id="schoolName"></div>
+            <div class="font-bold text-lg" id="studentName"></div>
+            <div class="font-bold text-lg">Elapsed Time <span id="timer">2:00</span></div>
+        </div>
+        
+        <div id="quizContainer">
+            <div class="font-semibold text-center mb-6" id="question"></div>
+
+            <div id="options" class="space-y-2"></div>
+
+            <button onclick="submitAnswer()" class="mt-4 bg-red-700 text-white px-4 py-2 rounded w-full">Submit</button>
+        </div>
+
+        <div id="result" class="hidden text-center font-semibold text-lg mt-6"></div>
+        
+        <div id="endQuizButtons" class="hidden mt-4 space-y-2">
+            <a href="pastwinners.html" class="block w-full bg-red-700 text-white text-center px-4 py-2 rounded">View Past Winners</a>
+            <button onclick="restartQuiz()" class="w-full bg-blue-500 text-white px-4 py-2 rounded">Restart Quiz</button>
+        </div>
+    </div>
+
+    <script>
+        // Display logged-in school and student details
+        const schoolName = localStorage.getItem('selectedSchool') || 'Unknown School';
+        const studentName = localStorage.getItem('selectedCandidate') || 'Unknown Student';
+        document.getElementById('schoolName').textContent = schoolName;
+        document.getElementById('studentName').textContent = studentName;
+
+        let questions = [
+            {
+                question: "What does HTML stand for?",
+                options: ["Hyper Type Markup Language", "Home Tool Markup Language", "Hyper Link and Text Markup Language", "Hyper Text Markup Language"],
+                correctAnswer: "Hyper Text Markup Language"
+            },
+            {
+                question: "What does CSS stand for?",
+                options: ["Colorful Style Sheets", "Computer Style Sheets", "Creative Style Sheets", "Cascading Style Sheets"],
+                correctAnswer: "Cascading Style Sheets"
+            },
+            {
+                question: "In what decade was the Internet created?",
+                options: ["1960s", "1970s", "1980s", "1990s"],
+                correctAnswer: "1960s"
+            },
+            {
+                question: "Which HTML attribute is used to define inline styles?",
+                options: ["Style", "Font", "Class", "Styles"],
+                correctAnswer: "Style"
+            },
+            {
+                question: "Which is the correct CSS syntax?",
+                options: ["body:color=black;", "{body:color=black;}", "body{color:black;}", "{body;color:black}"],
+                correctAnswer: "body{color:black;}"
+            },
+            {
+                question: "How many players are there in a soccer team?",
+                options: ["6", "11", "9", "4"],
+                correctAnswer: "Pacific"
+            },
+            {
+                question: "What is the correct HTML tag for playing video files?",
+                options: ["media", "movie", "video", "mp4"],
+                correctAnswer: "video"
+            },
+            {
+                question: "Which country hosted the 2024 FIFA U-20 Women's World Cup?",
+                options: ["India", "Nigeria", "Japan", "Colombia"],
+                correctAnswer: "Colombia"
+            },
+            {
+                question: "What is the chemical symbol for Gold?",
+                options: ["Au", "Go", "Gd", "Ag"],
+                correctAnswer: "Au"
+            },
+            {
+                question: "Who won the 2024 Grammy Award for Album of the Year?",
+                options: ["Billie Eilish", "Taylor Swift", "Harry Styles", "Beyoncé"],
+                correctAnswer: "Taylor Swift"
+            }
+        ];
+
+        let shuffledQuestions;
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let timer;
+        let timeLeft = 120; // 2 minutes in seconds
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        function startQuiz() {
+            shuffledQuestions = [...questions];
+            shuffleArray(shuffledQuestions);
+            currentQuestionIndex = 0;
+            score = 0;
+            loadQuestion();
+            startTimer();
+        }
+
+        function startTimer() {
+            timer = setInterval(() => {
+                timeLeft--;
+                let minutes = Math.floor(timeLeft / 60);
+                let seconds = timeLeft % 60;
+                document.getElementById("timer").textContent = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+
+                if (timeLeft <= 0) {
+                    clearInterval(timer);
+                    endQuiz();
+                }
+            }, 1000);
+        }
+
+        function loadQuestion() {
+            if (currentQuestionIndex < shuffledQuestions.length) {
+                let questionObj = shuffledQuestions[currentQuestionIndex];
+                document.getElementById("question").textContent = questionObj.question;
+                
+                const optionsContainer = document.getElementById("options");
+                optionsContainer.innerHTML = "";
+                
+                shuffleArray(questionObj.options);
+                questionObj.options.forEach((option, index) => {
+                    const label = document.createElement("label");
+                    label.className = "block border rounded-lg p-2";
+                    label.innerHTML = `
+                        <input type="radio" name="option" value="${option}" class="mr-2">
+                        ${option}
+                    `;
+                    optionsContainer.appendChild(label);
+                });
+            } else {
+                endQuiz();
+            }
+        }
+
+        function submitAnswer() {
+            let selectedOption = document.querySelector("input[name='option']:checked");
+            if (selectedOption) {
+                let answer = selectedOption.value;
+                if (answer === shuffledQuestions[currentQuestionIndex].correctAnswer) {
+                    score++;
+                }
+                currentQuestionIndex++;
+                if (currentQuestionIndex < shuffledQuestions.length) {
+                    loadQuestion();
+                } else {
+                    endQuiz();
+                }
+            }
+        }
+
+        function endQuiz() {
+            clearInterval(timer);
+            document.getElementById("quizContainer").classList.add("hidden");
+            document.getElementById("result").classList.remove("hidden");
+            document.getElementById("endQuizButtons").classList.remove("hidden");
+            
+            const congratsMessage = `Congratulations, ${studentName} from ${schoolName}!`;
+            const scoreMessage = `Your score is: ${score}/${shuffledQuestions.length}`;
+            document.getElementById("result").innerHTML = `${congratsMessage}<br>${scoreMessage}`;
+
+            // Save winner's information
+            const currentYear = new Date().getFullYear();
+            const winnerInfo = {
+                year: currentYear,
+                schoolName: schoolName,
+                candidateName: studentName,
+                score: score
+            };
+
+            let pastWinners = JSON.parse(localStorage.getItem('pastWinners')) || [];
+            pastWinners.push(winnerInfo);
+            localStorage.setItem('pastWinners', JSON.stringify(pastWinners));
+
+            // Update best school score
+            updateBestSchoolScore(schoolName, score);
+        }
+
+        function updateBestSchoolScore(schoolName, score) {
+            let bestScores = JSON.parse(localStorage.getItem('bestSchoolScores')) || {};
+            if (!bestScores[schoolName] || score > bestScores[schoolName].score) {
+                bestScores[schoolName] = {
+                    candidateName: studentName,
+                    score: score
+                };
+                localStorage.setItem('bestSchoolScores', JSON.stringify(bestScores));
+            }
+        }
+
+        function restartQuiz() {
+            timeLeft = 120;
+            document.getElementById("quizContainer").classList.remove("hidden");
+            document.getElementById("result").classList.add("hidden");
+            document.getElementById("endQuizButtons").classList.add("hidden");
+            startQuiz();
+        }
+
+        // Start the quiz
+        startQuiz();
+    </script>
+</body>
+</html>

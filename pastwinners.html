@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lumen Quiz Competition</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-white font-sans antialiased">
+    <div class="container mx-auto p-6">
+        <div class="text-center mb-6">
+            <h1 class="text-2xl font-bold">Lumen et Veritas International Academy</h1>
+            <h2 class="text-lg">Quiz Competition Past Winners</h2>
+        </div>
+
+        <h3 class="text-xl font-bold mb-4">Best School Scores for Current Academic Year</h3>
+        <table class="w-full border-collapse border border-gray-300 mb-8">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border border-gray-300 p-2">School Name</th>
+                    <th class="border border-gray-300 p-2">Best Candidate</th>
+                    <th class="border border-gray-300 p-2">Best Score</th>
+                </tr>
+            </thead>
+            <tbody id="best-scores-list">
+                <!-- Best scores will be dynamically added here -->
+            </tbody>
+        </table>
+
+        <h3 class="text-xl font-bold mb-4">All Past Winners</h3>
+        <table class="w-full border-collapse border border-gray-300">
+            <thead>
+                <tr class="bg-gray-100">
+                    <th class="border border-gray-300 p-2">Year</th>
+                    <th class="border border-gray-300 p-2">School Name</th>
+                    <th class="border border-gray-300 p-2">Candidate Name</th>
+                    <th class="border border-gray-300 p-2">Score</th>
+                </tr>
+            </thead>
+            <tbody id="winners-list">
+                <!-- Winners will be dynamically added here -->
+            </tbody>
+        </table>
+
+        <br>
+
+        <div class="mt-4">
+            <a href="index.html" class="bg-red-700 text-white px-4 py-2 rounded">Home</a>
+            <a href="login.html" class="bg-blue-700 text-white px-4 py-2 rounded">Login</a>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for past winners
+        const sampleWinners = [
+            {
+                year: 2023,
+                schoolName: "Loyola Jesuit College",
+                candidateName: "Tope Maxwell",
+                score: 9
+            },
+            {
+                year: 2022,
+                schoolName: "American International School of Abuja",
+                candidateName: "Chidera Roland",
+                score: 8
+            },
+            {
+                year: 2021,
+                schoolName: "Premier International School",
+                candidateName: "Musa Tanko",
+                score: 10
+            },
+            {
+                year: 2020,
+                schoolName: "Lead British International School",
+                candidateName: "Timini Godwin",
+                score: 9
+            }
+        ];
+
+        // Function to populate past winners and best school scores
+        function populateWinners() {
+            let pastWinners = JSON.parse(localStorage.getItem('pastWinners')) || [];
+            let bestScores = JSON.parse(localStorage.getItem('bestSchoolScores')) || {};
+            
+            // Combine sample winners with stored winners
+            pastWinners = [...sampleWinners, ...pastWinners];
+
+            const winnersList = document.getElementById('winners-list');
+            const bestScoresList = document.getElementById('best-scores-list');
+            
+            // Populate best school scores
+            for (const winner of pastWinners) {
+                if (!bestScores[winner.schoolName] || winner.score > bestScores[winner.schoolName].score) {
+                    bestScores[winner.schoolName] = {
+                        candidateName: winner.candidateName,
+                        score: winner.score
+                    };
+                }
+            }
+
+            for (const [schoolName, data] of Object.entries(bestScores)) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border border-gray-300 p-2">${schoolName}</td>
+                    <td class="border border-gray-300 p-2">${data.candidateName}</td>
+                    <td class="border border-gray-300 p-2">${data.score}</td>
+                `;
+                bestScoresList.appendChild(row);
+            }
+
+            // Populate all past winners
+            pastWinners.forEach(winner => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="border border-gray-300 p-2">${winner.year}</td>
+                    <td class="border border-gray-300 p-2">${winner.schoolName}</td>
+                    <td class="border border-gray-300 p-2">${winner.candidateName}</td>
+                    <td class="border border-gray-300 p-2">${winner.score}</td>
+                `;
+                winnersList.appendChild(row);
+            });
+        }
+
+        // Call the function when the DOM is loaded
+        document.addEventListener('DOMContentLoaded', populateWinners);
+    </script>
+</body>
+</html>
